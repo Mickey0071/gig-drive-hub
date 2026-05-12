@@ -13,6 +13,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppFleetIdRouteImport } from './routes/_app/fleet.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -34,39 +35,53 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppFleetIdRoute = AppFleetIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AppFleetRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AppDashboardRoute
-  '/fleet': typeof AppFleetRoute
+  '/fleet': typeof AppFleetRouteWithChildren
+  '/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/dashboard': typeof AppDashboardRoute
-  '/fleet': typeof AppFleetRoute
+  '/fleet': typeof AppFleetRouteWithChildren
+  '/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/_app/dashboard': typeof AppDashboardRoute
-  '/_app/fleet': typeof AppFleetRoute
+  '/_app/fleet': typeof AppFleetRouteWithChildren
+  '/_app/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/dashboard' | '/fleet'
+  fullPaths: '/' | '/login' | '/dashboard' | '/fleet' | '/fleet/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/dashboard' | '/fleet'
-  id: '__root__' | '/' | '/login' | '/_app/dashboard' | '/_app/fleet'
+  to: '/' | '/login' | '/dashboard' | '/fleet' | '/fleet/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/_app/dashboard'
+    | '/_app/fleet'
+    | '/_app/fleet/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   AppDashboardRoute: typeof AppDashboardRoute
-  AppFleetRoute: typeof AppFleetRoute
+  AppFleetRoute: typeof AppFleetRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -99,14 +114,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/fleet/$id': {
+      id: '/_app/fleet/$id'
+      path: '/$id'
+      fullPath: '/fleet/$id'
+      preLoaderRoute: typeof AppFleetIdRouteImport
+      parentRoute: typeof AppFleetRoute
+    }
   }
 }
+
+interface AppFleetRouteChildren {
+  AppFleetIdRoute: typeof AppFleetIdRoute
+}
+
+const AppFleetRouteChildren: AppFleetRouteChildren = {
+  AppFleetIdRoute: AppFleetIdRoute,
+}
+
+const AppFleetRouteWithChildren = AppFleetRoute._addFileChildren(
+  AppFleetRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   AppDashboardRoute: AppDashboardRoute,
-  AppFleetRoute: AppFleetRoute,
+  AppFleetRoute: AppFleetRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
