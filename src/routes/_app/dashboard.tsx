@@ -112,6 +112,13 @@ function DashboardPage() {
   );
 }
 
+const toneStyles: Record<string, string> = {
+  success: "bg-success/15 text-success",
+  info: "bg-primary/15 text-primary",
+  warning: "bg-warning/15 text-warning",
+  danger: "bg-danger/15 text-danger",
+};
+
 function StatCard({ title, value, tone, icon: Icon, to }: { title: string; value: number; tone: "success" | "info" | "warning" | "danger"; icon: any; to: string }) {
   return (
     <Link to={to}>
@@ -121,8 +128,8 @@ function StatCard({ title, value, tone, icon: Icon, to }: { title: string; value
             <div className="text-sm text-muted-foreground">{title}</div>
             <div className="text-3xl font-bold mt-1">{value}</div>
           </div>
-          <div className={`h-10 w-10 rounded-md flex items-center justify-center bg-${tone}/15`}>
-            <Icon className={`h-5 w-5 text-${tone}`} />
+          <div className={`h-10 w-10 rounded-md flex items-center justify-center ${toneStyles[tone]}`}>
+            <Icon className="h-5 w-5" />
           </div>
         </CardContent>
       </Card>
