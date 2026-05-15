@@ -16,6 +16,7 @@ import {
   Menu,
   User as UserIcon,
   Phone,
+  ListTodo,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -31,6 +32,7 @@ export function AppShell() {
 
   const nav: NavItem[] = [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, show: isAdmin },
+    { to: "/tasks", label: "Tasks", icon: ListTodo, show: isAdmin },
     { to: "/fleet", label: "Fleet", icon: Car, show: isAdmin || isStaff },
     { to: "/drivers", label: "Drivers", icon: Users, show: isAdmin || isStaff },
     { to: "/rentals", label: "Rentals", icon: ClipboardList, show: isAdmin || isStaff },
