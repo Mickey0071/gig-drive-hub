@@ -609,6 +609,42 @@ export type Database = {
         }
         Relationships: []
       }
+      tasks: {
+        Row: {
+          completed_at: string | null
+          completed_by_name: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          priority: number
+          status: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_by_name?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: number
+          status?: Database["public"]["Enums"]["task_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_by_name?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          priority?: number
+          status?: Database["public"]["Enums"]["task_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -768,6 +804,7 @@ export type Database = {
       rideshare_platform: "uber" | "lyft" | "both"
       staff_pay_type: "hourly" | "salary" | "per-vehicle"
       staff_status: "active" | "inactive"
+      task_status: "pending" | "done"
       vehicle_status: "available" | "rented" | "maintenance" | "impound"
       violation_status: "pending" | "paid" | "contested"
       violation_type: "PPA" | "ticket" | "impound"
@@ -919,6 +956,7 @@ export const Constants = {
       rideshare_platform: ["uber", "lyft", "both"],
       staff_pay_type: ["hourly", "salary", "per-vehicle"],
       staff_status: ["active", "inactive"],
+      task_status: ["pending", "done"],
       vehicle_status: ["available", "rented", "maintenance", "impound"],
       violation_status: ["pending", "paid", "contested"],
       violation_type: ["PPA", "ticket", "impound"],
