@@ -15,6 +15,7 @@ import {
   LogOut,
   Menu,
   User as UserIcon,
+  Phone,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -37,6 +38,7 @@ export function AppShell() {
     { to: "/inspections", label: "Inspections", icon: CheckSquare, show: isAdmin || isStaff },
     { to: "/maintenance", label: "Maintenance", icon: Wrench, show: isAdmin || isStaff },
     { to: "/violations", label: "Violations", icon: ShieldAlert, show: isAdmin || isStaff },
+    { to: "/contacts", label: "Contacts", icon: Phone, show: isAdmin || isStaff || isDriver },
     { to: "/me", label: "My Rental", icon: UserIcon, show: isDriver },
     { to: "/admin/users", label: "Users & Roles", icon: UserCog, show: isAdmin },
   ].filter((n) => n.show);
