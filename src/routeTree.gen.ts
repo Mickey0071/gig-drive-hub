@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDriversRouteImport } from './routes/_app/drivers'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
+import { Route as AppContactsRouteImport } from './routes/_app/contacts'
 import { Route as AppFleetIdRouteImport } from './routes/_app/fleet.$id'
 
 const SignupRoute = SignupRouteImport.update({
@@ -47,6 +48,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppContactsRoute = AppContactsRouteImport.update({
+  id: '/_app/contacts',
+  path: '/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppFleetIdRoute = AppFleetIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
   '/drivers': typeof AppDriversRoute
   '/fleet': typeof AppFleetRouteWithChildren
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
   '/drivers': typeof AppDriversRoute
   '/fleet': typeof AppFleetRouteWithChildren
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/_app/contacts': typeof AppContactsRoute
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/drivers': typeof AppDriversRoute
   '/_app/fleet': typeof AppFleetRouteWithChildren
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/contacts'
     | '/dashboard'
     | '/drivers'
     | '/fleet'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/contacts'
     | '/dashboard'
     | '/drivers'
     | '/fleet'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/signup'
+    | '/_app/contacts'
     | '/_app/dashboard'
     | '/_app/drivers'
     | '/_app/fleet'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  AppContactsRoute: typeof AppContactsRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppDriversRoute: typeof AppDriversRoute
   AppFleetRoute: typeof AppFleetRouteWithChildren
@@ -164,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_app/contacts': {
+      id: '/_app/contacts'
+      path: '/contacts'
+      fullPath: '/contacts'
+      preLoaderRoute: typeof AppContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/fleet/$id': {
       id: '/_app/fleet/$id'
       path: '/$id'
@@ -190,6 +210,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  AppContactsRoute: AppContactsRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppDriversRoute: AppDriversRoute,
   AppFleetRoute: AppFleetRouteWithChildren,
@@ -197,3 +218,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
