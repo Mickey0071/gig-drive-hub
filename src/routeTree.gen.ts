@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as RunnerRouteImport } from './routes/runner'
 import { Route as PendingRouteImport } from './routes/pending'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
@@ -22,6 +23,11 @@ import { Route as AppFleetIdRouteImport } from './routes/_app/fleet.$id'
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RunnerRoute = RunnerRouteImport.update({
+  id: '/runner',
+  path: '/runner',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PendingRoute = PendingRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/runner': typeof RunnerRoute
   '/signup': typeof SignupRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/runner': typeof RunnerRoute
   '/signup': typeof SignupRoute
   '/contacts': typeof AppContactsRoute
   '/dashboard': typeof AppDashboardRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/pending': typeof PendingRoute
+  '/runner': typeof RunnerRoute
   '/signup': typeof SignupRoute
   '/_app/contacts': typeof AppContactsRoute
   '/_app/dashboard': typeof AppDashboardRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/pending'
+    | '/runner'
     | '/signup'
     | '/contacts'
     | '/dashboard'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/pending'
+    | '/runner'
     | '/signup'
     | '/contacts'
     | '/dashboard'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/pending'
+    | '/runner'
     | '/signup'
     | '/_app/contacts'
     | '/_app/dashboard'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
   PendingRoute: typeof PendingRoute
+  RunnerRoute: typeof RunnerRoute
   SignupRoute: typeof SignupRoute
   AppContactsRoute: typeof AppContactsRoute
   AppDashboardRoute: typeof AppDashboardRoute
@@ -153,6 +166,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/runner': {
+      id: '/runner'
+      path: '/runner'
+      fullPath: '/runner'
+      preLoaderRoute: typeof RunnerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pending': {
@@ -230,6 +250,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   PendingRoute: PendingRoute,
+  RunnerRoute: RunnerRoute,
   SignupRoute: SignupRoute,
   AppContactsRoute: AppContactsRoute,
   AppDashboardRoute: AppDashboardRoute,
@@ -239,3 +260,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
