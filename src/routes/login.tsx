@@ -63,6 +63,12 @@ function LoginPage() {
                 Sign up
               </Link>
             </p>
+            <p className="text-sm text-center text-muted-foreground border-t border-border pt-4">
+              Runner?{" "}
+              <Link to="/runner" className="text-primary hover:underline">
+                Open task list
+              </Link>
+            </p>
           </form>
         </CardContent>
       </Card>
