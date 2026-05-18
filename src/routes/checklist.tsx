@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -53,9 +53,11 @@ type SubmittedSummary = {
 function ChecklistPage() {
   const navigate = useNavigate();
 
-  const [inspectorName, setInspectorName] = useState(
-    () => (typeof window !== "undefined" ? localStorage.getItem("inspector_name") ?? "" : "")
-  );
+  const [inspectorName, setInspectorName] = useState("");
+  useEffect(() => {
+    const saved = localStorage.getItem("inspector_name");
+    if (saved) setInspectorName(saved);
+  }, []);
   const [vehicleId, setVehicleId] = useState<string>("");
   const [jobType, setJobType] = useState<string>("");
   const [items, setItems] = useState<Record<string, ChecklistValue>>({});
