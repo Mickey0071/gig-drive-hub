@@ -154,41 +154,56 @@ export type Database = {
       }
       inspections: {
         Row: {
+          checklist_items: Json
           completed_by: string | null
           damage_noted: boolean
           damage_photos: string[] | null
           date: string
           fuel_level: string | null
           id: string
+          inspector_name: string | null
+          job_type: string | null
           mileage: number | null
           notes: string | null
+          ready_to_rent: boolean | null
           rental_id: string | null
+          submitted_at: string
           type: Database["public"]["Enums"]["inspection_type"]
           vehicle_id: string
         }
         Insert: {
+          checklist_items?: Json
           completed_by?: string | null
           damage_noted?: boolean
           damage_photos?: string[] | null
           date?: string
           fuel_level?: string | null
           id?: string
+          inspector_name?: string | null
+          job_type?: string | null
           mileage?: number | null
           notes?: string | null
+          ready_to_rent?: boolean | null
           rental_id?: string | null
+          submitted_at?: string
           type: Database["public"]["Enums"]["inspection_type"]
           vehicle_id: string
         }
         Update: {
+          checklist_items?: Json
           completed_by?: string | null
           damage_noted?: boolean
           damage_photos?: string[] | null
           date?: string
           fuel_level?: string | null
           id?: string
+          inspector_name?: string | null
+          job_type?: string | null
           mileage?: number | null
           notes?: string | null
+          ready_to_rent?: boolean | null
           rental_id?: string | null
+          submitted_at?: string
           type?: Database["public"]["Enums"]["inspection_type"]
           vehicle_id?: string
         }
@@ -219,6 +234,7 @@ export type Database = {
           next_service_due: string | null
           notes: string | null
           service_type: string
+          source_inspection_id: string | null
           vehicle_id: string
           vendor: string | null
         }
@@ -231,6 +247,7 @@ export type Database = {
           next_service_due?: string | null
           notes?: string | null
           service_type: string
+          source_inspection_id?: string | null
           vehicle_id: string
           vendor?: string | null
         }
@@ -243,10 +260,18 @@ export type Database = {
           next_service_due?: string | null
           notes?: string | null
           service_type?: string
+          source_inspection_id?: string | null
           vehicle_id?: string
           vendor?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "maintenance_source_inspection_id_fkey"
+            columns: ["source_inspection_id"]
+            isOneToOne: false
+            referencedRelation: "inspections"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "maintenance_vehicle_id_fkey"
             columns: ["vehicle_id"]
@@ -615,33 +640,51 @@ export type Database = {
           completed_by_name: string | null
           created_at: string
           id: string
+          make: string | null
+          model: string | null
           notes: string | null
+          plate: string | null
           priority: number
+          priority_level: string
+          runner_name: string | null
           status: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at: string
+          year: number | null
         }
         Insert: {
           completed_at?: string | null
           completed_by_name?: string | null
           created_at?: string
           id?: string
+          make?: string | null
+          model?: string | null
           notes?: string | null
+          plate?: string | null
           priority?: number
+          priority_level?: string
+          runner_name?: string | null
           status?: Database["public"]["Enums"]["task_status"]
           title: string
           updated_at?: string
+          year?: number | null
         }
         Update: {
           completed_at?: string | null
           completed_by_name?: string | null
           created_at?: string
           id?: string
+          make?: string | null
+          model?: string | null
           notes?: string | null
+          plate?: string | null
           priority?: number
+          priority_level?: string
+          runner_name?: string | null
           status?: Database["public"]["Enums"]["task_status"]
           title?: string
           updated_at?: string
+          year?: number | null
         }
         Relationships: []
       }
@@ -670,6 +713,7 @@ export type Database = {
         Row: {
           created_at: string
           daily_rate: number | null
+          has_open_issues: boolean
           id: string
           make: string
           mileage: number
@@ -686,6 +730,7 @@ export type Database = {
         Insert: {
           created_at?: string
           daily_rate?: number | null
+          has_open_issues?: boolean
           id?: string
           make: string
           mileage?: number
@@ -702,6 +747,7 @@ export type Database = {
         Update: {
           created_at?: string
           daily_rate?: number | null
+          has_open_issues?: boolean
           id?: string
           make?: string
           mileage?: number
