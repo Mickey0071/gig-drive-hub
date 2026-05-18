@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
@@ -36,6 +36,7 @@ type Vehicle = {
   make: string;
   model: string;
   plate: string;
+  status: string;
 };
 
 type SubmittedSummary = {
@@ -52,9 +53,11 @@ type SubmittedSummary = {
 function ChecklistPage() {
   const navigate = useNavigate();
 
-  const [inspectorName, setInspectorName] = useState(
-    () => (typeof window !== "undefined" ? localStorage.getItem("inspector_name") ?? "" : "")
-  );
+  const [inspectorName, setInspectorName] = useState("");
+  useEffect(() => {
+    const saved = localStorage.getItem("inspector_name");
+    if (saved) setInspectorName(saved);
+  }, []);
   const [vehicleId, setVehicleId] = useState<string>("");
   const [jobType, setJobType] = useState<string>("");
   const [items, setItems] = useState<Record<string, ChecklistValue>>({});
@@ -72,7 +75,7 @@ function ChecklistPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("vehicles")
-        .select("id, year, make, model, plate")
+        .select("id, year, make, model, plate, status")
         .order("make", { ascending: true });
       if (error) throw error;
       return data as Vehicle[];
@@ -276,7 +279,7 @@ function ChecklistPage() {
               <SelectContent>
                 {vehicles?.map((v) => (
                   <SelectItem key={v.id} value={v.id}>
-                    {v.year} {v.make} {v.model} — {v.plate}
+                    {v.year} {v.make} {v.model} — {v.plate} [{v.status}]
                   </SelectItem>
                 ))}
               </SelectContent>
