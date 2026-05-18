@@ -36,6 +36,7 @@ type Vehicle = {
   make: string;
   model: string;
   plate: string;
+  status: string;
 };
 
 type SubmittedSummary = {
@@ -72,7 +73,7 @@ function ChecklistPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("vehicles")
-        .select("id, year, make, model, plate")
+        .select("id, year, make, model, plate, status")
         .order("make", { ascending: true });
       if (error) throw error;
       return data as Vehicle[];
@@ -276,7 +277,7 @@ function ChecklistPage() {
               <SelectContent>
                 {vehicles?.map((v) => (
                   <SelectItem key={v.id} value={v.id}>
-                    {v.year} {v.make} {v.model} — {v.plate}
+                    {v.year} {v.make} {v.model} — {v.plate} [{v.status}]
                   </SelectItem>
                 ))}
               </SelectContent>
