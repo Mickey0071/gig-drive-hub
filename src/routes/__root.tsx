@@ -74,13 +74,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Camauto Rentals — Fleet Management" },
+      { title: "FLEET COORDINATOR" },
       { name: "description", content: "Manage your rideshare rental fleet, drivers, and payments." },
-      { property: "og:title", content: "Camauto Rentals" },
-      { property: "og:description", content: "Fleet rental management for rideshare and gig drivers." },
+      { property: "og:title", content: "FLEET COORDINATOR" },
+      { property: "og:description", content: "Manage your rideshare rental fleet, drivers, and payments." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "FLEET COORDINATOR" },
+      { name: "twitter:description", content: "Manage your rideshare rental fleet, drivers, and payments." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d70e686f-0627-4227-b524-925735597f7b/id-preview-89bf5750--23dfc478-daad-403a-9677-52a0be449753.lovable.app-1778944029322.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/d70e686f-0627-4227-b524-925735597f7b/id-preview-89bf5750--23dfc478-daad-403a-9677-52a0be449753.lovable.app-1778944029322.png" },
     ],
     links: [
       {
