@@ -108,13 +108,17 @@ function ChecklistPage() {
     return { pass, fail, na };
   }, [items]);
 
-  const canSubmit =
-    inspectorName.trim().length > 0 &&
-    vehicleId &&
-    jobType &&
-    Object.keys(items).length > 0 &&
-    readyToRent !== null &&
-    fuelLevel;
+  const missingFields = useMemo(() => {
+    const m: string[] = [];
+    if (inspectorName.trim().length === 0) m.push("inspector name");
+    if (!vehicleId) m.push("vehicle");
+    if (!jobType) m.push("job type");
+    if (Object.keys(items).length === 0) m.push("at least one checklist item");
+    if (readyToRent === null) m.push("ready to rent status");
+    if (!fuelLevel) m.push("fuel level");
+    return m;
+  }, [inspectorName, vehicleId, jobType, items, readyToRent, fuelLevel]);
+  const canSubmit = missingFields.length === 0;
 
   const handlePhotoUpload = async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -454,6 +458,11 @@ function ChecklistPage() {
       {/* Sticky submit */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto max-w-2xl">
+          {!canSubmit && (
+            <div className="mb-2 rounded-md border border-warning bg-warning/10 px-3 py-2 text-sm text-warning-foreground">
+              Cannot submit — missing: {missingFields.join(", ")}.
+            </div>
+          )}
           <Button
             disabled={!canSubmit || submitting}
             onClick={handleSubmit}
