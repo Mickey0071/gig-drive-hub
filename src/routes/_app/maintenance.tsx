@@ -19,6 +19,13 @@ export const Route = createFileRoute("/_app/maintenance")({ component: Maintenan
 
 const PROBLEM_TYPES = ["Transmission", "Engine", "Brakes", "Tires", "Battery", "Suspension", "Electrical", "AC/Heat", "Other"];
 
+type LineItem = { description: string; part_price: string; labor_price: string };
+const blankItem = (): LineItem => ({ description: "", part_price: "", labor_price: "" });
+const num = (s: string) => {
+  const n = parseFloat(s);
+  return isFinite(n) ? n : 0;
+};
+
 type Vehicle = { id: string; year: number; make: string; model: string; plate: string };
 type Vendor = { id: string; name: string; phone: string };
 type Maintenance = {
@@ -199,6 +206,7 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
   const [estDate, setEstDate] = useState("");
   const [estTime, setEstTime] = useState("17:00");
   const [downPayment, setDownPayment] = useState("");
+  const [items, setItems] = useState<LineItem[]>([blankItem()]);
   const [saving, setSaving] = useState(false);
 
   // New vendor sub-form
@@ -212,11 +220,21 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
   if (!vendorName) missing.push("vendor");
   if (!estDate) missing.push("estimated return date");
 
+  const total = items.reduce((s, it) => s + num(it.part_price) + num(it.labor_price), 0);
+  const balance = total - num(downPayment);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (missing.length) return;
     setSaving(true);
     const estIso = new Date(`${estDate}T${estTime}:00`).toISOString();
+    const cleanItems = items
+      .filter((it) => it.description.trim() || it.part_price || it.labor_price)
+      .map((it) => ({
+        description: it.description.trim(),
+        part_price: num(it.part_price),
+        labor_price: num(it.labor_price),
+      }));
     const { error } = await supabase.from("maintenance").insert({
       vehicle_id: vehicleId,
       service_type: problemDetails.trim(),
@@ -224,6 +242,8 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
       vendor: vendorName,
       estimated_return_at: estIso,
       down_payment: downPayment ? Number(downPayment) : null,
+      cost: total > 0 ? total : null,
+      line_items: cleanItems,
       date_completed: null,
     } as any);
     setSaving(false);
@@ -322,6 +342,56 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
           <Label>Down Payment</Label>
           <Input type="number" step="0.01" value={downPayment} onChange={(e) => setDownPayment(e.target.value)} placeholder="0.00" />
         </div>
+
+        <Card className="p-3 space-y-3">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm font-semibold">Pricing Breakdown</Label>
+            <Button type="button" size="sm" variant="ghost" onClick={() => setItems([...items, blankItem()])}>
+              <Plus className="h-3 w-3 mr-1" /> Add Item
+            </Button>
+          </div>
+          {items.map((it, idx) => {
+            const itemTotal = num(it.part_price) + num(it.labor_price);
+            return (
+              <div key={idx} className="space-y-2 border-l-2 border-border pl-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-muted-foreground">Item {idx + 1}</span>
+                  {items.length > 1 && (
+                    <Button type="button" size="sm" variant="ghost" className="h-6 px-2 text-xs"
+                      onClick={() => setItems(items.filter((_, i) => i !== idx))}>Remove</Button>
+                  )}
+                </div>
+                <Input placeholder="Part description (e.g. Transmission fluid + filter)"
+                  value={it.description}
+                  onChange={(e) => setItems(items.map((x, i) => i === idx ? { ...x, description: e.target.value } : x))} />
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Part Price</Label>
+                    <Input type="number" step="0.01" placeholder="0.00" value={it.part_price}
+                      onChange={(e) => setItems(items.map((x, i) => i === idx ? { ...x, part_price: e.target.value } : x))} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Labor Price</Label>
+                    <Input type="number" step="0.01" placeholder="0.00" value={it.labor_price}
+                      onChange={(e) => setItems(items.map((x, i) => i === idx ? { ...x, labor_price: e.target.value } : x))} />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Subtotal</Label>
+                    <Input disabled value={formatMoney(itemTotal)} />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+          <div className="border-t border-border pt-3 grid grid-cols-2 gap-2 text-sm">
+            <div className="text-muted-foreground">Total</div>
+            <div className="text-right font-semibold">{formatMoney(total)}</div>
+            <div className="text-muted-foreground">Down Payment</div>
+            <div className="text-right">{formatMoney(num(downPayment))}</div>
+            <div className="text-muted-foreground font-semibold">Balance</div>
+            <div className="text-right font-bold text-primary">{formatMoney(balance)}</div>
+          </div>
+        </Card>
 
         {missing.length > 0 && (
           <p className="text-xs text-muted-foreground">Missing: {missing.join(", ")}</p>
