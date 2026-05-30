@@ -225,7 +225,10 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (missing.length) return;
+    if (missing.length) {
+      toast.error(`Please fill in: ${missing.join(", ")}`);
+      return;
+    }
     setSaving(true);
     const estIso = new Date(`${estDate}T${estTime}:00`).toISOString();
     const cleanItems = items
@@ -235,7 +238,7 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
         part_price: num(it.part_price),
         labor_price: num(it.labor_price),
       }));
-    const { error } = await supabase.from("maintenance").insert({
+    const payload = {
       vehicle_id: vehicleId,
       service_type: problemDetails.trim(),
       problem_type: problemType,
@@ -245,9 +248,14 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
       cost: total > 0 ? total : null,
       line_items: cleanItems,
       date_completed: null,
-    } as any);
+    };
+    console.log("[maintenance] inserting", payload);
+    const { error } = await supabase.from("maintenance").insert(payload as any);
     setSaving(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      console.error("[maintenance] insert failed", error);
+      return toast.error(error.message || "Failed to create ticket");
+    }
     toast.success("Issue created");
     onClose();
   };
@@ -398,7 +406,7 @@ function AddIssueDialog({ onClose }: { onClose: () => void }) {
         )}
 
         <DialogFooter>
-          <Button type="submit" disabled={saving || missing.length > 0}>{saving ? "Creating…" : "Create Ticket"}</Button>
+          <Button type="submit" disabled={saving}>{saving ? "Creating…" : "Create Ticket"}</Button>
         </DialogFooter>
       </form>
     </DialogContent>
