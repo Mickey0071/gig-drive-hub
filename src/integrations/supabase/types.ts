@@ -232,6 +232,7 @@ export type Database = {
           down_payment: number | null
           estimated_return_at: string | null
           id: string
+          line_items: Json
           mileage_at_service: number | null
           next_service_due: string | null
           notes: string | null
@@ -248,6 +249,7 @@ export type Database = {
           down_payment?: number | null
           estimated_return_at?: string | null
           id?: string
+          line_items?: Json
           mileage_at_service?: number | null
           next_service_due?: string | null
           notes?: string | null
@@ -264,6 +266,7 @@ export type Database = {
           down_payment?: number | null
           estimated_return_at?: string | null
           id?: string
+          line_items?: Json
           mileage_at_service?: number | null
           next_service_due?: string | null
           notes?: string | null
