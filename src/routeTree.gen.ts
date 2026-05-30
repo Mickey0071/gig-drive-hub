@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppTasksRouteImport } from './routes/_app/tasks'
+import { Route as AppMaintenanceRouteImport } from './routes/_app/maintenance'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
 import { Route as AppDriversRouteImport } from './routes/_app/drivers'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
@@ -57,6 +58,11 @@ const AppTasksRoute = AppTasksRouteImport.update({
   path: '/tasks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppMaintenanceRoute = AppMaintenanceRouteImport.update({
+  id: '/_app/maintenance',
+  path: '/maintenance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppFleetRoute = AppFleetRouteImport.update({
   id: '/_app/fleet',
   path: '/fleet',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardRoute
   '/drivers': typeof AppDriversRoute
   '/fleet': typeof AppFleetRouteWithChildren
+  '/maintenance': typeof AppMaintenanceRoute
   '/tasks': typeof AppTasksRoute
   '/fleet/$id': typeof AppFleetIdRoute
 }
@@ -108,6 +115,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/drivers': typeof AppDriversRoute
   '/fleet': typeof AppFleetRouteWithChildren
+  '/maintenance': typeof AppMaintenanceRoute
   '/tasks': typeof AppTasksRoute
   '/fleet/$id': typeof AppFleetIdRoute
 }
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/drivers': typeof AppDriversRoute
   '/_app/fleet': typeof AppFleetRouteWithChildren
+  '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/tasks': typeof AppTasksRoute
   '/_app/fleet/$id': typeof AppFleetIdRoute
 }
@@ -139,6 +148,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drivers'
     | '/fleet'
+    | '/maintenance'
     | '/tasks'
     | '/fleet/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -153,6 +163,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/drivers'
     | '/fleet'
+    | '/maintenance'
     | '/tasks'
     | '/fleet/$id'
   id:
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/drivers'
     | '/_app/fleet'
+    | '/_app/maintenance'
     | '/_app/tasks'
     | '/_app/fleet/$id'
   fileRoutesById: FileRoutesById
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
   AppDriversRoute: typeof AppDriversRoute
   AppFleetRoute: typeof AppFleetRouteWithChildren
+  AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppTasksRoute: typeof AppTasksRoute
 }
 
@@ -234,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof AppTasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/maintenance': {
+      id: '/_app/maintenance'
+      path: '/maintenance'
+      fullPath: '/maintenance'
+      preLoaderRoute: typeof AppMaintenanceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/fleet': {
@@ -297,6 +317,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
   AppDriversRoute: AppDriversRoute,
   AppFleetRoute: AppFleetRouteWithChildren,
+  AppMaintenanceRoute: AppMaintenanceRoute,
   AppTasksRoute: AppTasksRoute,
 }
 export const routeTree = rootRouteImport

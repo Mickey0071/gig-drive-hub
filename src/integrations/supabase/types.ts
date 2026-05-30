@@ -229,10 +229,13 @@ export type Database = {
           cost: number | null
           created_at: string
           date_completed: string
+          down_payment: number | null
+          estimated_return_at: string | null
           id: string
           mileage_at_service: number | null
           next_service_due: string | null
           notes: string | null
+          problem_type: string | null
           service_type: string
           source_inspection_id: string | null
           vehicle_id: string
@@ -242,10 +245,13 @@ export type Database = {
           cost?: number | null
           created_at?: string
           date_completed: string
+          down_payment?: number | null
+          estimated_return_at?: string | null
           id?: string
           mileage_at_service?: number | null
           next_service_due?: string | null
           notes?: string | null
+          problem_type?: string | null
           service_type: string
           source_inspection_id?: string | null
           vehicle_id: string
@@ -255,10 +261,13 @@ export type Database = {
           cost?: number | null
           created_at?: string
           date_completed?: string
+          down_payment?: number | null
+          estimated_return_at?: string | null
           id?: string
           mileage_at_service?: number | null
           next_service_due?: string | null
           notes?: string | null
+          problem_type?: string | null
           service_type?: string
           source_inspection_id?: string | null
           vehicle_id?: string
