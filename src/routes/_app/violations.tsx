@@ -34,7 +34,7 @@ type Violation = {
   created_at: string;
 };
 
-const TONE: Record<Violation["status"], "warning" | "success" | "danger" | "info" | "neutral"> = {
+const TONE: Record<Violation["status"], "warning" | "success" | "danger" | "info" | "muted"> = {
   pending: "warning",
   unmatched: "warning",
   matched: "info",
@@ -121,7 +121,7 @@ function ViolationsPage() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                  <StatusBadge tone={TONE[v.status] ?? "neutral"}>{v.status.toUpperCase().replace(/_/g, " ")}</StatusBadge>
+                  <StatusBadge tone={TONE[v.status] ?? "muted"}>{v.status.toUpperCase().replace(/_/g, " ")}</StatusBadge>
                   {!v.rental_id && v.status !== "not_our_vehicle" && (
                     <Button size="sm" variant="outline" onClick={() => setMatchTarget(v)}>
                       <LinkIcon className="h-4 w-4 mr-1" /> Manual Match
@@ -426,7 +426,7 @@ function ManualMatchDialog({ violation, onClose }: { violation: Violation; onClo
                 </div>
               </div>
               <div className="flex flex-col items-end gap-1">
-                <StatusBadge tone={r.is_active ? "success" : "neutral"}>{r.is_active ? "Active" : "Returned"}</StatusBadge>
+                <StatusBadge tone={r.is_active ? "success" : "muted"}>{r.is_active ? "Active" : "Returned"}</StatusBadge>
                 <Button size="sm" disabled={matching === r.id} onClick={() => matchTo(r)}>
                   {matching === r.id ? "Matching…" : "Match to This Rental"}
                 </Button>
