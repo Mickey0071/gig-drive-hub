@@ -782,8 +782,14 @@ export type Database = {
           date_issued: string
           driver_id: string | null
           id: string
+          location: string | null
           notes: string | null
+          plate_text: string | null
+          raw: Json | null
+          rental_id: string | null
+          source: string
           status: Database["public"]["Enums"]["violation_status"]
+          time_issued: string | null
           type: Database["public"]["Enums"]["violation_type"]
           vehicle_id: string | null
         }
@@ -793,8 +799,14 @@ export type Database = {
           date_issued: string
           driver_id?: string | null
           id?: string
+          location?: string | null
           notes?: string | null
+          plate_text?: string | null
+          raw?: Json | null
+          rental_id?: string | null
+          source?: string
           status?: Database["public"]["Enums"]["violation_status"]
+          time_issued?: string | null
           type: Database["public"]["Enums"]["violation_type"]
           vehicle_id?: string | null
         }
@@ -804,8 +816,14 @@ export type Database = {
           date_issued?: string
           driver_id?: string | null
           id?: string
+          location?: string | null
           notes?: string | null
+          plate_text?: string | null
+          raw?: Json | null
+          rental_id?: string | null
+          source?: string
           status?: Database["public"]["Enums"]["violation_status"]
+          time_issued?: string | null
           type?: Database["public"]["Enums"]["violation_type"]
           vehicle_id?: string | null
         }
@@ -815,6 +833,13 @@ export type Database = {
             columns: ["driver_id"]
             isOneToOne: false
             referencedRelation: "drivers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "violations_rental_id_fkey"
+            columns: ["rental_id"]
+            isOneToOne: false
+            referencedRelation: "rentals"
             referencedColumns: ["id"]
           },
           {
@@ -864,7 +889,13 @@ export type Database = {
       staff_status: "active" | "inactive"
       task_status: "pending" | "done"
       vehicle_status: "available" | "rented" | "maintenance" | "impound"
-      violation_status: "pending" | "paid" | "contested"
+      violation_status:
+        | "pending"
+        | "paid"
+        | "contested"
+        | "unmatched"
+        | "matched"
+        | "not_our_vehicle"
       violation_type: "PPA" | "ticket" | "impound"
     }
     CompositeTypes: {
@@ -1016,7 +1047,14 @@ export const Constants = {
       staff_status: ["active", "inactive"],
       task_status: ["pending", "done"],
       vehicle_status: ["available", "rented", "maintenance", "impound"],
-      violation_status: ["pending", "paid", "contested"],
+      violation_status: [
+        "pending",
+        "paid",
+        "contested",
+        "unmatched",
+        "matched",
+        "not_our_vehicle",
+      ],
       violation_type: ["PPA", "ticket", "impound"],
     },
   },
