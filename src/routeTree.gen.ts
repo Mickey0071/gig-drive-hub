@@ -15,6 +15,7 @@ import { Route as PendingRouteImport } from './routes/pending'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ChecklistRouteImport } from './routes/checklist'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppViolationsRouteImport } from './routes/_app/violations'
 import { Route as AppTasksRouteImport } from './routes/_app/tasks'
 import { Route as AppMaintenanceRouteImport } from './routes/_app/maintenance'
 import { Route as AppFleetRouteImport } from './routes/_app/fleet'
@@ -51,6 +52,11 @@ const ChecklistRoute = ChecklistRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppViolationsRoute = AppViolationsRouteImport.update({
+  id: '/_app/violations',
+  path: '/violations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppTasksRoute = AppTasksRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/fleet': typeof AppFleetRouteWithChildren
   '/maintenance': typeof AppMaintenanceRoute
   '/tasks': typeof AppTasksRoute
+  '/violations': typeof AppViolationsRoute
   '/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/fleet': typeof AppFleetRouteWithChildren
   '/maintenance': typeof AppMaintenanceRoute
   '/tasks': typeof AppTasksRoute
+  '/violations': typeof AppViolationsRoute
   '/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/_app/fleet': typeof AppFleetRouteWithChildren
   '/_app/maintenance': typeof AppMaintenanceRoute
   '/_app/tasks': typeof AppTasksRoute
+  '/_app/violations': typeof AppViolationsRoute
   '/_app/fleet/$id': typeof AppFleetIdRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/maintenance'
     | '/tasks'
+    | '/violations'
     | '/fleet/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/maintenance'
     | '/tasks'
+    | '/violations'
     | '/fleet/$id'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/_app/fleet'
     | '/_app/maintenance'
     | '/_app/tasks'
+    | '/_app/violations'
     | '/_app/fleet/$id'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   AppFleetRoute: typeof AppFleetRouteWithChildren
   AppMaintenanceRoute: typeof AppMaintenanceRoute
   AppTasksRoute: typeof AppTasksRoute
+  AppViolationsRoute: typeof AppViolationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -240,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/violations': {
+      id: '/_app/violations'
+      path: '/violations'
+      fullPath: '/violations'
+      preLoaderRoute: typeof AppViolationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/tasks': {
@@ -319,17 +339,8 @@ const rootRouteChildren: RootRouteChildren = {
   AppFleetRoute: AppFleetRouteWithChildren,
   AppMaintenanceRoute: AppMaintenanceRoute,
   AppTasksRoute: AppTasksRoute,
+  AppViolationsRoute: AppViolationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
